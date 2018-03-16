@@ -53,11 +53,11 @@ func main () {
 
 		listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}		//  array of numbers for the game
 
-		positionCursor = 0								// position of the cursor
+		positionCursor = 2								// position of the cursor
 
 		numberOfGoes   = 0								// number of valid commands the user enters
 
-		numberDigits   = 6
+		numberDigits   = 6								// total number of digits in the list
 
 	)
 
@@ -66,15 +66,7 @@ func main () {
 	 //    Calling Game Methods
 	 //-------------------------------------
 
-	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
-
-	 moveCursorRight(&positionCursor,numberDigits)				  				// move the cursor right
-
-	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
-
-	 moveCursorLeft(&positionCursor,numberDigits)				  				// move the cursor left
-
-	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
+	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)						   // display game state
 
 
  }
@@ -92,7 +84,6 @@ func main () {
 */
 func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   numberOfGoes int) {
 
-//var i = 0;                                             			 // initialise counter index
 
 	fmt.Printf("\n\n\t\t Game State ")                        // print to console
 
@@ -114,11 +105,15 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 
 	fmt.Printf("< Cursor at %d >", cursorValue )              // print cursor value
 
+	fmt.Printf("\t\t\t")                                      // separator of data
+
+	fmt.Printf("< numberAtCursor is %d >", listOfNumbers[cursorValue])              // print cursor value
+
 	fmt.Printf("\n")                                          // new line
 
 	fmt.Printf("   ")             							 //  Space before cursor
 
-	fmt.Printf("^")                                           // print cursor
+	//fmt.Printf("^")                                           // print cursor
 
 	fmt.Printf("\n -----------------------------\n")          // line break to split content
 
@@ -135,15 +130,21 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
  *@param  numberDigits   : number of digits in the list
 
  */
- func moveCursorRight(positionCursor *int, numberDigits int) {
+ func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int, numberAtCursor *int) {
 
 	if *positionCursor == numberDigits { 		// Scenario 1: position of cursor at the end of list
 
 		*positionCursor=0						// set it to the beginning
 
+		positionCursor = &listOfNumbers[0]
+
 	} else {									// Scenario 2: position of cursor is not at the end of list
 
 		*positionCursor++						// increase the value of position of the cursor
+
+		var temp  = *positionCursor
+
+		positionCursor = &listOfNumbers[temp]
 	}
  }
 
@@ -166,4 +167,45 @@ func moveCursorLeft(positionCursor *int, numberDigits int) {
 
 		*positionCursor--						// decrease the value of position of the cursor
 	}
+}
+
+
+/**
+ * incrementDigitInListAtPos
+ *
+ * increments value at cursor position
+ *
+ *@param  numberAtCursor  : value in list stored at cursor position
+ */
+func incrementDigitInListAtPos( numberAtCursor *int ) {
+
+	if  *numberAtCursor == 9  {    				// Scenario 1: Value is 9
+
+		*numberAtCursor = 0        				// resets value at position to 0
+
+	} else {                       				// Scenario 2: value not 9
+
+		*numberAtCursor++          				// increments value by one
+	}
+
+}
+
+/**
+ * decrementDigitInListAtPos
+ *
+ * decrements value at cursor position
+ *
+ *@param  numberAtCursor  : value in list stored at cursor position
+ */
+func decrementDigitInListAtPos( numberAtCursor *int ) {
+
+	if  *numberAtCursor == 0  {    				// Scenario 1: Value is 0
+
+		*numberAtCursor = 9        				// resets value at position to 9
+
+	} else {                       				// Scenario 2: value not 0
+
+		*numberAtCursor--         				// decrements value by one
+	}
+
 }
