@@ -49,21 +49,32 @@ func main () {
 	 //    Declaring Variables
 	 //-------------------------------------
 
-
 	var (
 
-		listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}
+		listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}		//  array of numbers for the game
 
-		positionCursor = 0
+		positionCursor = 0								// position of the cursor
 
-		numberOfGoes   = 0
+		numberOfGoes   = 0								// number of valid commands the user enters
 
 		numberDigits   = 6
 
 	)
 
 
-	 displayState(listOfNumbers, positionCursor, numberDigits, numberOfGoes)		// display game state
+	 //-------------------------------------
+	 //    Calling Game Methods
+	 //-------------------------------------
+
+	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
+
+	 moveCursorRight(&positionCursor,numberDigits)				  				// move the cursor right
+
+	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
+
+	 moveCursorLeft(&positionCursor,numberDigits)				  				// move the cursor left
+
+	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)		// display game state
 
 
  }
@@ -77,12 +88,11 @@ func main () {
 *
 *@param  listOfNumbers[]  :  address of listOfNumbers
 *@param  positionOfCursor : location of cursor
-*@param  max              : number of values
 *@param numberOfGoes      : number of goes the user takes
 */
-func displayState ( plistOfNumbers [6]int ,  cursorValue int,  max int,  numberOfGoes int) {
+func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   numberOfGoes int) {
 
-//var i = 0;                                             			  // initialise counter index
+//var i = 0;                                             			 // initialise counter index
 
 	fmt.Printf("\n\n\t\t Game State ")                        // print to console
 
@@ -90,7 +100,9 @@ func displayState ( plistOfNumbers [6]int ,  cursorValue int,  max int,  numberO
 
 	fmt.Printf("< ")                                          // open array for numbers
 
-	fmt.Printf(" %d ",plistOfNumbers)      				      // print list
+	for i := 0; i < numberDigits; i++ {
+		fmt.Printf(" %d ",listOfNumbers[i])      		     // print list
+	}
 
 	fmt.Printf(" >")                                          // close array for numbers
 
@@ -98,14 +110,13 @@ func displayState ( plistOfNumbers [6]int ,  cursorValue int,  max int,  numberO
 
 	fmt.Printf("< Num Goes: %d >", numberOfGoes )             // print number of goes
 
-	fmt.Printf("\t\t\t")                                        // separator of data
+	fmt.Printf("\t\t\t")                                      // separator of data
 
 	fmt.Printf("< Cursor at %d >", cursorValue )              // print cursor value
 
 	fmt.Printf("\n")                                          // new line
 
-	fmt.Printf("\t")             						//  Space before cursor
-
+	fmt.Printf("   ")             							 //  Space before cursor
 
 	fmt.Printf("^")                                           // print cursor
 
@@ -113,4 +124,46 @@ func displayState ( plistOfNumbers [6]int ,  cursorValue int,  max int,  numberO
 
 	fmt.Printf(  "\n Enter your move: ")                      // ask  user to enter move
 
+}
+
+/**
+ * moveCursorRight
+ *
+ * moves the cursor one value to the right
+ *
+ *@param  positionCursor : location of cursor
+ *@param  numberDigits   : number of digits in the list
+
+ */
+ func moveCursorRight(positionCursor *int, numberDigits int) {
+
+	if *positionCursor == numberDigits { 		// Scenario 1: position of cursor at the end of list
+
+		*positionCursor=0						// set it to the beginning
+
+	} else {									// Scenario 2: position of cursor is not at the end of list
+
+		*positionCursor++						// increase the value of position of the cursor
+	}
+ }
+
+/**
+* moveCursorLeft
+*
+* moves the cursor one value to the right
+*
+*@param  positionCursor : location of cursor
+*@param  numberDigits   : number of digits in the list
+
+*/
+func moveCursorLeft(positionCursor *int, numberDigits int) {
+
+	if *positionCursor == 0 { 					// Scenario 1: position of cursor at the beginning of list
+
+		*positionCursor=numberDigits			// set it to the end
+
+	} else {									// Scenario 2: position of cursor is not at the beginning of list
+
+		*positionCursor--						// decrease the value of position of the cursor
+	}
 }
