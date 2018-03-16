@@ -51,7 +51,10 @@ func main () {
 
 	var (
 
-		listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}		//  array of numbers for the game
+		// listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}		//  array of numbers for the game
+
+		listOfNumbers2 = [6]int{2, 3, 5, 5, 3, 2}		// TEST :   array of numbers for the game
+
 
 		positionCursor = 2								// position of the cursor
 
@@ -61,13 +64,13 @@ func main () {
 
 	)
 
-
 	 //-------------------------------------
 	 //    Calling Game Methods
 	 //-------------------------------------
 
-	 displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)						   // display game state
+	 displayState(listOfNumbers2, positionCursor,numberDigits, numberOfGoes)		// display game state
 
+	 is_palindrome(listOfNumbers2, numberDigits)
 
  }
 
@@ -107,17 +110,17 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 
 	fmt.Printf("\t\t\t")                                      // separator of data
 
-	fmt.Printf("< numberAtCursor is %d >", listOfNumbers[cursorValue])              // print cursor value
+	fmt.Printf("< numberAtCursor is %d >", listOfNumbers[cursorValue])// print cursor value
 
 	fmt.Printf("\n")                                          // new line
 
 	fmt.Printf("   ")             							 //  Space before cursor
 
-	//fmt.Printf("^")                                           // print cursor
+	//fmt.Printf("^")                                           	 // print cursor
 
 	fmt.Printf("\n -----------------------------\n")          // line break to split content
 
-	fmt.Printf(  "\n Enter your move: ")                      // ask  user to enter move
+	fmt.Printf("\n Enter your move: ")                        // ask  user to enter move
 
 }
 
@@ -130,21 +133,21 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
  *@param  numberDigits   : number of digits in the list
 
  */
- func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int, numberAtCursor *int) {
+ func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int) {
 
 	if *positionCursor == numberDigits { 		// Scenario 1: position of cursor at the end of list
 
 		*positionCursor=0						// set it to the beginning
 
-		positionCursor = &listOfNumbers[0]
+		positionCursor = &listOfNumbers[0]	    // sets address of position to be that of the correct element
 
 	} else {									// Scenario 2: position of cursor is not at the end of list
 
 		*positionCursor++						// increase the value of position of the cursor
 
-		var temp  = *positionCursor
+		var temp  = *positionCursor				// temp variable for position of cursor
 
-		positionCursor = &listOfNumbers[temp]
+		positionCursor = &listOfNumbers[temp]	// sets address of position to be that of the correct element
 	}
  }
 
@@ -157,15 +160,21 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 *@param  numberDigits   : number of digits in the list
 
 */
-func moveCursorLeft(positionCursor *int, numberDigits int) {
+func moveCursorLeft(positionCursor *int, numberDigits int,listOfNumbers [6]int) {
 
-	if *positionCursor == 0 { 					// Scenario 1: position of cursor at the beginning of list
+	if *positionCursor == 0 { 						  // Scenario 1: position of cursor at the beginning of list
 
-		*positionCursor=numberDigits			// set it to the end
+		*positionCursor=numberDigits				  // set it to the end
 
-	} else {									// Scenario 2: position of cursor is not at the beginning of list
+		positionCursor = &listOfNumbers[numberDigits] // sets address of position to be that of the correct element
 
-		*positionCursor--						// decrease the value of position of the cursor
+	} else {										  // Scenario 2: position of cursor is not at the beginning of list
+
+		*positionCursor--							  // decrease the value of position of the cursor
+
+		var temp  = *positionCursor					  // temp variable for position of cursor
+
+		positionCursor = &listOfNumbers[temp]   	  // sets address of position to be that of the correct element
 	}
 }
 
@@ -209,3 +218,27 @@ func decrementDigitInListAtPos( numberAtCursor *int ) {
 	}
 
 }
+
+
+/**
+ * isPalindrome
+ *
+ * checks if the array is a palindrome
+ *
+ * Returns true if a palindrome
+ * Returns false if not a palindrome
+ *
+ *@param pListOfNumbers : address of first element in list
+ *@param size           : size of the list
+ */
+func is_palindrome(listOfNumbers [6]int,numberDigits int ) {
+
+	for i := 0 ; i < numberDigits ; i++ {                                     // loop through array size
+
+		if  (listOfNumbers[i]) == ((listOfNumbers[numberDigits - 1]) - i) {  // copy first element of array with its last each time
+			fmt.Printf("\n Text: Is a Palindrome ")                        // ask  user to enter move
+
+		}
+	}
+}
+
