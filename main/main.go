@@ -86,28 +86,28 @@ func main () {
  * displays header for game with : name
  *                               : goal and for controls
  *                               : valid commands
- *
  */
 func displayGameHeader(){
 
-	fmt.Printf("\n     ---------------------        ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n      THE PALINDROME GAME         ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n     ---------------------        ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n     Convert the List into        ")
-	fmt.Printf("\n      a palindrome to win         ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n     ---------------------        ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n    'd' = move cursor left        ")
-	fmt.Printf("\n    'a' = move cursor right       ")
-	fmt.Printf("\n    'w' = increase digit value    ")
-	fmt.Printf("\n    'x' = decrease digit value    ")
-	fmt.Printf("\n    enter key = submit command    ")
-	fmt.Printf("\n                                  ")
-	fmt.Printf("\n     ---------------------        ")
+	fmt.Printf("\n       ------------------------     ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n         THE PALINDROME GAME        ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n       ------------------------     ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n          Convert the list          ")
+	fmt.Printf("\n          of numbers into a         ")
+	fmt.Printf("\n          palindrome to win         ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n       ------------------------     ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n      'd' = move cursor left        ")
+	fmt.Printf("\n      'a' = move cursor right       ")
+	fmt.Printf("\n      'w' = increase digit value    ")
+	fmt.Printf("\n      'x' = decrease digit value    ")
+	fmt.Printf("\n      enter key = submit command    ")
+	fmt.Printf("\n                                    ")
+	fmt.Printf("\n       ------------------------     ")
 }
 /**
  * displayState
@@ -123,9 +123,9 @@ func displayGameHeader(){
  */
 func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   numberOfGoes int) {
 
-	fmt.Printf("\n\n\t\t Game State ")                         // print to console
+	fmt.Printf("\n\n\t\t\tGame State ")                        // print to console
 
-	fmt.Printf("\n -----------------------------\n\n")         // line break to split content
+	fmt.Printf("\n ---------------------------------\n\n")     // line break to split content
 
 	fmt.Printf("< ")                                           // open array for numbers
 
@@ -153,7 +153,7 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 	}
 	fmt.Printf("^")                                             // print cursor
 
-	fmt.Printf("\n -----------------------------\n")            // line break to split content
+	fmt.Printf("\n ---------------------------------\n")            // line break to split content
 
 	fmt.Printf("\n Enter your move: ")                          // ask  user to enter move
 }
@@ -251,10 +251,11 @@ func decrementDigitInListAtPos( numberAtCursor *int ) {
  *
  * Stores command entered by user
  *
+ *return inputCommand : inputted command of user
  */
 func getCommand( )*string {
 
-	var inputCommand string 		//define variable to store inputCommand
+	var inputCommand string 		// define variable to store inputCommand
 
 	fmt.Scanln(&inputCommand) 		// stores character from user
 
@@ -275,13 +276,13 @@ func processCommand(command *string, listOfNumbers *[6]int, positionCursor *int,
 
 	if *command == "w" { 											  // Scenario 1: User enters w
 
-		incrementDigitInListAtPos(&listOfNumbers[*positionCursor])     // increases number
+		incrementDigitInListAtPos(&listOfNumbers[*positionCursor])    // increases number
 
 		*numberOfGoes += 1 											  // increase number of goes
 
 	} else if *command == "x" { 								      // Scenario 2: User enters x
 
-		decrementDigitInListAtPos(&listOfNumbers[*positionCursor])     // decreases number
+		decrementDigitInListAtPos(&listOfNumbers[*positionCursor])    // decreases number
 
 		*numberOfGoes += 1 											  // increase number of goes
 
@@ -302,9 +303,6 @@ func processCommand(command *string, listOfNumbers *[6]int, positionCursor *int,
 		fmt.Printf("\n*------------------------------------------*")
 		fmt.Printf("\n*      Error: Enter a valid command        *")
 		fmt.Printf("\n*------------------------------------------*")
-
-
-
 	}
 }
 /**
