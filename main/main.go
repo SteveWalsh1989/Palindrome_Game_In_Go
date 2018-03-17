@@ -1,49 +1,54 @@
 package main
 
-
 import(
 	_ "fmt"
-
-	"fmt"
+	  "fmt"
 )
-
-/******************************************************************************
+/************************************************************************
  *
- * Golang Project
+ *  Golang Project
  *
- * Steve Walsh
+ *  Steve Walsh
  *
- * 16/11/2018
+ *  17/11/2018
  *
- * Palindrome game
+ *  Palindrome game
  *
- * Goal:
- * Present list of numbers to user and goal is to make it a palindrome
- * User can use keyboard to move between numbers using a and d keys
- * user can increment or decrement values in list using w and x keys
- * Program will count number of goes it takes user to complete game
- *
+ *  Goal:
+ *  Present list of numbers to user and goal is to make it a palindrome
+ *  User can use keyboard to move between numbers using a and d keys
+ *  user can increment or decrement values in list using w and x keys
+ *  Program will count number of goes it takes user to complete game
  *
  *
+ *  To Do:
+ *	randomList		: Randomise list of numbers in the array
+ *	randomCursorPos : Randomise cursor position at the start of game
  *
- *******************************************************************************/
-func main () {
-
-	start_game()  // start the game
-
-}
-
+ *  Not Working:
+ *  processCommand  : cannot go right if at end of list
+ *					: cannot go left if at beginning of list
+ *					: isPalindrome func works standalone but not in the startGame function
+ *
+ *
+ **************************************************************************/
 
 /**
- * start_game
+ * main
+ *
+ * main program function to run
+ */
+func main () {
+
+	startGame()  // start the game
+
+}
+/**
+ * startGame
  *
  * starts the game
- *
- * creates an integer array to use based on an integer
- * passed into method as a parameter
- * *
  */
- func start_game(){
+ func startGame(){
 
 	 //-------------------------------------
 	 //    Declaring Variables
@@ -51,16 +56,18 @@ func main () {
 
 	var (
 
-		// listOfNumbers = [6]int{2, 3, 5, 7, 11, 13}		//  array of numbers for the game
+		listOfNumbers = [6]int{2, 1, 6, 9, 3, 5}		//  array of numbers for the game
 
-		listOfNumbers2 = [6]int{2, 3, 5, 5, 3, 2}		// TEST :   array of numbers for the game
+		// listOfNumbers = [6]int{2, 3, 5, 5, 3, 2}    // TEST :   array of numbers for the game which is a palindrome already
 
-
-		positionCursor = 2								// position of the cursor
+		positionCursor = 0								// position of the cursor
 
 		numberOfGoes   = 0								// number of valid commands the user enters
 
 		numberDigits   = 6								// total number of digits in the list
+
+		isWinner       = false                          // stores if user has won game
+
 
 	)
 
@@ -68,22 +75,61 @@ func main () {
 	 //    Calling Game Methods
 	 //-------------------------------------
 
-	 displayState(listOfNumbers2, positionCursor,numberDigits, numberOfGoes)		// display game state
+	 displayGameHeader() 																			// display header for game
 
-	 is_palindrome(listOfNumbers2, numberDigits)
+	 for isWinner != true {																			// keep looping until user is winner
 
+		displayState(listOfNumbers, positionCursor,numberDigits, numberOfGoes)						// display game state
+
+		userCommand := getCommand()																	// store user command
+
+		processCommand(userCommand, &listOfNumbers, &positionCursor, &numberOfGoes, numberDigits) 	// process user command
+
+		isWinner = isPalindrome(listOfNumbers, numberDigits )										// checks if list is a palindrome
+	 }
+		userWon(&numberOfGoes)                                                          			// prints congratulations to user if winner
  }
+/**
+* displayGameHeader
+*
+* displays header for game with : name
+*                               : goal and for controls
+*                               : valid commands
+*
+**/
+func displayGameHeader(){
+
+	fmt.Printf("\n     ---------------------        ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n      THE PALINDROME GAME         ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n     ---------------------        ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n     Convert the List into        ")
+	fmt.Printf("\n      a palindrome to win         ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n     ---------------------        ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n    'd' = move cursor left        ")
+	fmt.Printf("\n    'a' = move cursor right       ")
+	fmt.Printf("\n    'w' = increase digit value    ")
+	fmt.Printf("\n    'x' = decrease digit value    ")
+	fmt.Printf("\n    enter key = submit command    ")
+	fmt.Printf("\n                                  ")
+	fmt.Printf("\n     ---------------------        ")
+}
 
 /**
 * displayState
 *
 * shows the state of the 'game'
 *
-* show the list of numbers in the array and the value of the cursor.
+* show the list of numbers in the array, the value of the cursor and value of element at cursor.
 *
-*@param  listOfNumbers[]  :  address of listOfNumbers
-*@param  positionOfCursor : location of cursor
-*@param numberOfGoes      : number of goes the user takes
+*@param  listOfNumbers[]  : address of listOfNumbers
+*@param  cursorValue      : location of cursor
+*@param  numberDigits     : size of list
+*@param  numberOfGoes     : number of goes the user takes
 */
 func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   numberOfGoes int) {
 
@@ -106,11 +152,11 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 
 	fmt.Printf("\t\t\t")                                      // separator of data
 
-	fmt.Printf("< Cursor at %d >", cursorValue )              // print cursor value
+	fmt.Printf("< Cursor at position: %d >", cursorValue+1 )              // print cursor value
 
 	fmt.Printf("\t\t\t")                                      // separator of data
 
-	fmt.Printf("< numberAtCursor is %d >", listOfNumbers[cursorValue])// print cursor value
+	fmt.Printf("< Value of cursor: %d >", listOfNumbers[cursorValue])// print cursor value
 
 	fmt.Printf("\n")                                          // new line
 
@@ -133,11 +179,11 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
  *@param  numberDigits   : number of digits in the list
 
  */
- func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int) {
+ func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int)  {
 
 	if *positionCursor == numberDigits { 		// Scenario 1: position of cursor at the end of list
 
-		*positionCursor=0						// set it to the beginning
+		*positionCursor = 0						// set it to the beginning
 
 		positionCursor = &listOfNumbers[0]	    // sets address of position to be that of the correct element
 
@@ -149,6 +195,7 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 
 		positionCursor = &listOfNumbers[temp]	// sets address of position to be that of the correct element
 	}
+
  }
 
 /**
@@ -166,7 +213,7 @@ func moveCursorLeft(positionCursor *int, numberDigits int,listOfNumbers [6]int) 
 
 		*positionCursor=numberDigits				  // set it to the end
 
-		positionCursor = &listOfNumbers[numberDigits] // sets address of position to be that of the correct element
+		positionCursor = &listOfNumbers[numberDigits-1] // sets address of position to be that of the correct element
 
 	} else {										  // Scenario 2: position of cursor is not at the beginning of list
 
@@ -177,8 +224,6 @@ func moveCursorLeft(positionCursor *int, numberDigits int,listOfNumbers [6]int) 
 		positionCursor = &listOfNumbers[temp]   	  // sets address of position to be that of the correct element
 	}
 }
-
-
 /**
  * incrementDigitInListAtPos
  *
@@ -219,7 +264,61 @@ func decrementDigitInListAtPos( numberAtCursor *int ) {
 
 }
 
+/**
+ * getCommand
+ *
+ * Stores command entered by user
+ *
+ */
+func getCommand( )*string {
 
+	var inputCommand string 		//define variable to store inputCommand
+
+	fmt.Scanln(&inputCommand) 		// stores character from user
+
+	return &inputCommand 			// returns users character
+}
+
+/**
+ * processCommand
+ *
+ * processes user command by calling relative method
+ *
+ *@param command    	: address of command the user enters
+ *@param listOfNumbers  : list of numbers
+ *@param positionCursor : position of the cursor
+ *@param numberOfGoes   : address of number of goes value
+ *@param numberDigits   : number of digits in the list
+ */
+func processCommand(command *string, listOfNumbers *[6]int, positionCursor *int, numberOfGoes *int, numberDigits int) {
+
+	if *command == "w" { 											  // Scenario 1: User enters w
+
+		incrementDigitInListAtPos(&listOfNumbers[*positionCursor])     // increases number
+
+		*numberOfGoes += 1 											  // increase number of goes
+
+	} else if *command == "x" { 								      // Scenario 2: User enters x
+
+		decrementDigitInListAtPos(&listOfNumbers[*positionCursor])     // decreases number
+
+		*numberOfGoes += 1 											  // increase number of goes
+
+	} else if *command == "a" { 									  // Scenario 3: User enters a
+
+		moveCursorLeft(positionCursor, numberDigits, *listOfNumbers)  // move cursor left
+
+		*numberOfGoes += 1 										  	  // increase number of goes
+
+	} else if *command == "d" { 									  // Scenario 4: User enters d
+
+		 moveCursorRight(positionCursor, numberDigits, *listOfNumbers) // move cursor right
+
+		*numberOfGoes += 1 											  // increase number of goes
+
+	}
+
+}
 /**
  * isPalindrome
  *
@@ -231,14 +330,34 @@ func decrementDigitInListAtPos( numberAtCursor *int ) {
  *@param pListOfNumbers : address of first element in list
  *@param size           : size of the list
  */
-func is_palindrome(listOfNumbers [6]int,numberDigits int ) {
+func isPalindrome(listOfNumbers [6]int,numberDigits int ) bool  {
+
+	isValid := true                                                 		  // initiate return value
 
 	for i := 0 ; i < numberDigits ; i++ {                                     // loop through array size
 
-		if  (listOfNumbers[i]) == ((listOfNumbers[numberDigits - 1]) - i) {  // copy first element of array with its last each time
-			fmt.Printf("\n Text: Is a Palindrome ")                        // ask  user to enter move
+		if  listOfNumbers[i] != listOfNumbers[(numberDigits - 1)-i]  {  	  // compare first element of array with its mirrored index value
 
+			isValid = false                                                	  // if not the same then it is not a palindrome
 		}
 	}
+	return isValid															  // return if is palindrome
 }
 
+/**
+ *
+ * userWon
+ *
+ * Tells user they won and how many goes it look
+ *
+ * @param numberOfGoes  : address of number of goes it took user to win
+ */
+func userWon( numberOfGoes *int){
+
+	fmt.Printf("\n")
+	fmt.Printf("\n*--------------------------------*")
+	fmt.Printf("\n*    Congratulations You Won!    *")
+	fmt.Printf("\n*--------------------------------*")
+	fmt.Printf("\n\n You took a total number of %d goes to create the palindrome!\n\n", *numberOfGoes)
+
+}
