@@ -23,10 +23,6 @@ import(
  *  Program will count number of goes it takes user to complete game
  *
  *
- *  To Do:
- *	randomList		: Randomise list of numbers in the array
- *
- *
  *
  **************************************************************************/
 
@@ -52,9 +48,7 @@ func main () {
 	 //-------------------------------------
 	var (
 
-		listOfNumbers = [6]int{2, 1, 6, 9, 3, 5}		//  array of numbers for the game
-
-		// listOfNumbers = [6]int{2, 3, 5, 5, 3, 2}    // TEST :   array of numbers for the game which is a palindrome already
+		listOfNumbers [6]int  						    //  array of numbers for the game
 
 		positionCursor = 0								// position of the cursor
 
@@ -69,6 +63,8 @@ func main () {
 	 //-------------------------------------
 
 	 displayGameHeader() 																			// display header for game
+
+	 listOfNumbers = createRandomList(listOfNumbers, numberDigits)								    // creates random list of numbers
 
 	 randomizeCursorPosition(&positionCursor, numberDigits)											// randomize cursor starting position
 
@@ -297,9 +293,18 @@ func processCommand(command *string, listOfNumbers *[6]int, positionCursor *int,
 
 	} else if *command == "d" { 									  // Scenario 4: User enters d
 
-		 moveCursorRight(positionCursor, numberDigits, *listOfNumbers) // move cursor right
+		 moveCursorRight(positionCursor, numberDigits, *listOfNumbers)// move cursor right
 
 		*numberOfGoes += 1 											  // increase number of goes
+
+	} else {														  // Scenario 5 : invalid command entered
+
+		fmt.Printf("\n*------------------------------------------*")
+		fmt.Printf("\n*      Error: Enter a valid command        *")
+		fmt.Printf("\n*------------------------------------------*")
+
+
+
 	}
 }
 /**
@@ -358,4 +363,24 @@ func randomizeCursorPosition( positionCursor *int, numberDigits int) {
 
 	*positionCursor = rand.Intn(numberDigits)  // set position of the cursor to random number between 0 - 6
 
+}
+
+/**
+ * createRandomList
+ *
+ * creates new list of 6 random numbers between 0 - 9
+ *
+ *@param  pPosOfCursor   : address of first cursor
+ *@param  size           : size of the list
+ *@return listOfNumbers  : returns list
+ */
+func createRandomList( listOfNumbers [6]int, numberDigits int) [6]int {
+
+	rand.Seed(time.Now().UTC().UnixNano())     // seeds rand by time to varey each time program runs
+
+	for i := 0 ; i < numberDigits ; i++ {      // loop through list
+
+		listOfNumbers[i] = rand.Intn(9)     // set element in list to random number between  0 - 9
+	}
+  return listOfNumbers  					   // return list of random numbers
 }
