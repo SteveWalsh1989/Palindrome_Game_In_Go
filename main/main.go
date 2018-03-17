@@ -3,6 +3,8 @@ package main
 import(
 	_ "fmt"
 	  "fmt"
+	  "math/rand"
+	  "time"
 )
 /************************************************************************
  *
@@ -23,12 +25,7 @@ import(
  *
  *  To Do:
  *	randomList		: Randomise list of numbers in the array
- *	randomCursorPos : Randomise cursor position at the start of game
  *
- *  Not Working:
- *  processCommand  : cannot go right if at end of list
- *					: cannot go left if at beginning of list
- *					: isPalindrome func works standalone but not in the startGame function
  *
  *
  **************************************************************************/
@@ -53,7 +50,6 @@ func main () {
 	 //-------------------------------------
 	 //    Declaring Variables
 	 //-------------------------------------
-
 	var (
 
 		listOfNumbers = [6]int{2, 1, 6, 9, 3, 5}		//  array of numbers for the game
@@ -67,15 +63,14 @@ func main () {
 		numberDigits   = 6								// total number of digits in the list
 
 		isWinner       = false                          // stores if user has won game
-
-
 	)
-
 	 //-------------------------------------
 	 //    Calling Game Methods
 	 //-------------------------------------
 
 	 displayGameHeader() 																			// display header for game
+
+	 randomizeCursorPosition(&positionCursor, numberDigits)											// randomize cursor starting position
 
 	 for isWinner != true {																			// keep looping until user is winner
 
@@ -90,13 +85,13 @@ func main () {
 		userWon(&numberOfGoes)                                                          			// prints congratulations to user if winner
  }
 /**
-* displayGameHeader
-*
-* displays header for game with : name
-*                               : goal and for controls
-*                               : valid commands
-*
-**/
+ * displayGameHeader
+ *
+ * displays header for game with : name
+ *                               : goal and for controls
+ *                               : valid commands
+ *
+ */
 func displayGameHeader(){
 
 	fmt.Printf("\n     ---------------------        ")
@@ -118,58 +113,54 @@ func displayGameHeader(){
 	fmt.Printf("\n                                  ")
 	fmt.Printf("\n     ---------------------        ")
 }
-
 /**
-* displayState
-*
-* shows the state of the 'game'
-*
-* show the list of numbers in the array, the value of the cursor and value of element at cursor.
-*
-*@param  listOfNumbers[]  : address of listOfNumbers
-*@param  cursorValue      : location of cursor
-*@param  numberDigits     : size of list
-*@param  numberOfGoes     : number of goes the user takes
-*/
+ * displayState
+ *
+ * shows the state of the 'game'
+ *
+ * show the list of numbers in the array, the value of the cursor and value of element at cursor.
+ *
+ *@param  listOfNumbers[]  : address of listOfNumbers
+ *@param  cursorValue      : location of cursor
+ *@param  numberDigits     : size of list
+ *@param  numberOfGoes     : number of goes the user takes
+ */
 func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   numberOfGoes int) {
 
+	fmt.Printf("\n\n\t\t Game State ")                         // print to console
 
-	fmt.Printf("\n\n\t\t Game State ")                        // print to console
+	fmt.Printf("\n -----------------------------\n\n")         // line break to split content
 
-	fmt.Printf("\n -----------------------------\n\n")        // line break to split content
-
-	fmt.Printf("< ")                                          // open array for numbers
+	fmt.Printf("< ")                                           // open array for numbers
 
 	for i := 0; i < numberDigits; i++ {
-		fmt.Printf(" %d ",listOfNumbers[i])      		     // print list
+		fmt.Printf("%d ",listOfNumbers[i])      		      	  // print list
 	}
+	fmt.Printf(">")                                            // close array for numbers
 
-	fmt.Printf(" >")                                          // close array for numbers
+	fmt.Printf("\t\t")                                         // separator of data
 
-	fmt.Printf("\t\t")                                        // separator of data
+	fmt.Printf("< Num Goes: %d >", numberOfGoes )              // print number of goes
 
-	fmt.Printf("< Num Goes: %d >", numberOfGoes )             // print number of goes
+	// fmt.Printf("\t\t\t")                                       		 //
+	// fmt.Printf("< Cursor at position: %d >", cursorValue+1 )   		 // TEST: cursor value
+	// fmt.Printf("\t\t\t")                                      		 //
+	// fmt.Printf("< Value of cursor: %d >", listOfNumbers[cursorValue]) // TEST: element in list at cursor value
 
-	fmt.Printf("\t\t\t")                                      // separator of data
+	fmt.Printf("\n")                                            // new line
 
-	fmt.Printf("< Cursor at position: %d >", cursorValue+1 )              // print cursor value
+	fmt.Printf("  ")             							   //  Space before cursor
 
-	fmt.Printf("\t\t\t")                                      // separator of data
+	for i:= 0 ; i < (cursorValue); i++  {              			  	   // loop until number of cursor
 
-	fmt.Printf("< Value of cursor: %d >", listOfNumbers[cursorValue])// print cursor value
+		fmt.Printf("  ")                                        // print space
+	}
+	fmt.Printf("^")                                             // print cursor
 
-	fmt.Printf("\n")                                          // new line
+	fmt.Printf("\n -----------------------------\n")            // line break to split content
 
-	fmt.Printf("   ")             							 //  Space before cursor
-
-	//fmt.Printf("^")                                           	 // print cursor
-
-	fmt.Printf("\n -----------------------------\n")          // line break to split content
-
-	fmt.Printf("\n Enter your move: ")                        // ask  user to enter move
-
+	fmt.Printf("\n Enter your move: ")                          // ask  user to enter move
 }
-
 /**
  * moveCursorRight
  *
@@ -177,11 +168,12 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
  *
  *@param  positionCursor : location of cursor
  *@param  numberDigits   : number of digits in the list
+ *@param  listOfNumbers  : list of numbers
 
  */
  func moveCursorRight( positionCursor *int, numberDigits int, listOfNumbers [6]int)  {
 
-	if *positionCursor == numberDigits { 		// Scenario 1: position of cursor at the end of list
+	if *positionCursor == numberDigits-1 { 		// Scenario 1: position of cursor at the end of list
 
 		*positionCursor = 0						// set it to the beginning
 
@@ -195,23 +187,21 @@ func displayState ( listOfNumbers [6]int ,  cursorValue int,numberDigits int,   
 
 		positionCursor = &listOfNumbers[temp]	// sets address of position to be that of the correct element
 	}
-
  }
-
 /**
-* moveCursorLeft
-*
-* moves the cursor one value to the right
-*
-*@param  positionCursor : location of cursor
-*@param  numberDigits   : number of digits in the list
-
-*/
+ * moveCursorLeft
+ *
+ * moves the cursor one value to the right
+ *
+ *@param  positionCursor : location of cursor
+ *@param  numberDigits   : number of digits in the list
+ *@param  listOfNumbers  : list of numbers
+ */
 func moveCursorLeft(positionCursor *int, numberDigits int,listOfNumbers [6]int) {
 
 	if *positionCursor == 0 { 						  // Scenario 1: position of cursor at the beginning of list
 
-		*positionCursor=numberDigits				  // set it to the end
+		*positionCursor=numberDigits-1				  // set it to the end
 
 		positionCursor = &listOfNumbers[numberDigits-1] // sets address of position to be that of the correct element
 
@@ -241,9 +231,7 @@ func incrementDigitInListAtPos( numberAtCursor *int ) {
 
 		*numberAtCursor++          				// increments value by one
 	}
-
 }
-
 /**
  * decrementDigitInListAtPos
  *
@@ -261,9 +249,7 @@ func decrementDigitInListAtPos( numberAtCursor *int ) {
 
 		*numberAtCursor--         				// decrements value by one
 	}
-
 }
-
 /**
  * getCommand
  *
@@ -278,7 +264,6 @@ func getCommand( )*string {
 
 	return &inputCommand 			// returns users character
 }
-
 /**
  * processCommand
  *
@@ -315,9 +300,7 @@ func processCommand(command *string, listOfNumbers *[6]int, positionCursor *int,
 		 moveCursorRight(positionCursor, numberDigits, *listOfNumbers) // move cursor right
 
 		*numberOfGoes += 1 											  // increase number of goes
-
 	}
-
 }
 /**
  * isPalindrome
@@ -343,7 +326,6 @@ func isPalindrome(listOfNumbers [6]int,numberDigits int ) bool  {
 	}
 	return isValid															  // return if is palindrome
 }
-
 /**
  *
  * userWon
@@ -359,5 +341,21 @@ func userWon( numberOfGoes *int){
 	fmt.Printf("\n*    Congratulations You Won!    *")
 	fmt.Printf("\n*--------------------------------*")
 	fmt.Printf("\n\n You took a total number of %d goes to create the palindrome!\n\n", *numberOfGoes)
+}
+
+
+/**
+ * randomizeCursorPosition
+ *
+ * randomizes the cursor position at the start of the game
+ *
+ *@param pPosOfCursor   : address of first cursor
+ *@param size           : size of the list
+ */
+func randomizeCursorPosition( positionCursor *int, numberDigits int) {
+
+	rand.Seed(time.Now().UTC().UnixNano())     // seeds rand by time to varey each time program runs
+
+	*positionCursor = rand.Intn(numberDigits)  // set position of the cursor to random number between 0 - 6
 
 }
